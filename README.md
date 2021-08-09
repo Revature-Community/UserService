@@ -18,7 +18,7 @@
 
 ### Resulted Diagram
 
-[Schema Diagram](https://github.com/Revature-Community/UserService/doc/p3diagram.png)
+[Schema Diagram](https://github.com/Revature-Community/UserService/blob/master/doc/p3diagram.png)
 
 ### Spring Security
 
