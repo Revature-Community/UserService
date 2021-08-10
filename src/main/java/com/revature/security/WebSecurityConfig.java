@@ -63,8 +63,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 				.authorizeRequests()
-					.antMatchers(HttpMethod.GET,  "/users/**").permitAll()//.hasAuthority("User")
-					.antMatchers(HttpMethod.GET,  "/users/:id").hasRole("User")///.hasAuthority("User")
+					.antMatchers(HttpMethod.GET,  "/users/**").hasAuthority("Admin")//.hasAuthority("User")
+					//.antMatchers(HttpMethod.GET,  "/users/{id}").hasAuthority("User")///.hasAuthority("User")
 	                  .antMatchers(HttpMethod.POST, "/users/login/").permitAll()//.hasRole("User")// .hasAuthority("Admin")
 	                  .anyRequest()
 	                    .authenticated();
@@ -74,4 +74,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		//JwtAuthTokenFilter validates the Token using JwtProvider
 	     http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 	}
+
 }
