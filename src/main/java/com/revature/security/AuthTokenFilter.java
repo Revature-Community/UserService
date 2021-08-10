@@ -45,11 +45,13 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
+				System.out.println("This User can pass");
 			}
 		} catch (Exception e) {
 			logger.error("Cannot set user authentication: {}", e);
 		}
-
+		
+		// block the user even if they have the token
 		filterChain.doFilter(request, response);
 	}
 
