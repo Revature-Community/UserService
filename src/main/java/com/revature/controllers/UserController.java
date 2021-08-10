@@ -1,5 +1,6 @@
 package com.revature.controllers;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,8 +25,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.revature.exceptions.ResourceNotFoundException;
 import com.revature.models.Role;
+import com.revature.models.RoleTitle;
 import com.revature.models.User;
 import com.revature.payloads.JwtResponse;
+import com.revature.payloads.signRequest;
 import com.revature.repositories.RoleRepository;
 import com.revature.repositories.UserRepository;
 import com.revature.security.JwtUtils;
@@ -52,7 +55,7 @@ public class UserController {
 	
 	@Autowired
 	private UserController(AuthenticationManager authenticationManager, UserRepository userRepository,
-			RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, UserService userServ) {
+			RoleRepository roleRepository, PasswordEncoder encoder, JwtUtils jwtUtils, UserService userServ ) {
 		super();
 		this.authenticationManager = authenticationManager;
 		this.userRepository = userRepository;
@@ -60,11 +63,12 @@ public class UserController {
 		this.encoder = encoder;
 		this.jwtUtils = jwtUtils;
 		this.userServ = userServ;
+
 	}
 
 	@GetMapping(path = "/", produces = "application/json")
 	public List<User> getAllUsers() {
-
+			// JwtRequest 
 		return userServ.findAll();
 
 	}
@@ -93,6 +97,8 @@ public class UserController {
 		//details of the present security context of the application is store 
 		SecurityContextHolder.getContext().setAuthentication(authentication);
 		
+		
+		// create a JWT token
 		String jwt = jwtUtils.generateJwtToken(authentication);
 		System.out.println("token: "+jwt);
 		//Authentication object. This principal can be cast into a UserDetails object to lookup the username, password 
@@ -120,18 +126,43 @@ public class UserController {
 		//return ResponseEntity.status(HttpStatus.ACCEPTED).body(userLoggedIn ); 
 	}
 	@PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
-	public ResponseEntity<User> createNewUser(@RequestBody User userToAdd) {
+	public ResponseEntity< User> createNewUser(@RequestBody  signRequest newRequest ) { // User userToAdd
+		System.out.println(newRequest.getRoles());
 //		if (userRepository.existsByUsername(userToAdd.getUsername())) {
 //			return ResponseEntity
 //					.badRequest()
-//					.body(new MessageResponse("Error: Username is already taken!")
+//					.body(new MessageResponse("Error: Username is already taken!") // replace it with a jwt response
 //					);
 //		}
 //		
-		//userToAdd.setRole(RoleTitle.User);
-		User userSaved = userServ.save(userToAdd);
+//		userToAdd.setRole(RoleTitle.User);
 		
-		return ResponseEntity.ok().body(userSaved); 
+		User user = new User();
+		user.setEmail(newRequest.getEmail());
+		user.setFirstName(newRequest.getFirstName());
+		user.setLastName(newRequest.getLastName());
+		user.setUsername(newRequest.getUsername());
+		user.setPassword(newRequest.getPassword());
+		
+		
+		// always  User role for now 
+		Role role = new Role();
+		RoleTitle title = RoleTitle.User;
+		role.setTitle(title);
+		 Set<Role> roleSet = new HashSet<>();
+		 user.setRoles(roleSet);	// now it is a set<Role> with only 1 role :)
+			
+		// save data
+		User userSaved = userServ.save(user);  // now save the user with data from the frontend and Role of 'User'
+		//For third table,  create user_roles repository /dao to save the incoming data :  6 (user id from userSaved) , 1 (role id of user) 
+		
+		
+		// constructd JWT payload 
+		
+		 // create JWT token
+		// return JWT response  
+		
+		return ResponseEntity.ok().body(userSaved); // we can instead send back  the JWT payload constructing from the userSaved later
 	}
 
 //	@DeleteMapping("/remove/{name}")
