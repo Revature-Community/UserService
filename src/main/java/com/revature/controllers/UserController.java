@@ -36,7 +36,7 @@ import com.revature.services.UserService;
 @CrossOrigin(origins="*", maxAge = 3600)
 @RequestMapping("/users")
 public class UserController {	
-	
+	//This is Authentication manager
 	AuthenticationManager authenticationManager;
 
 	UserRepository userRepository;
