@@ -45,7 +45,7 @@ public class UserController {
 
 	PasswordEncoder encoder;
 
-	JwtUtils jwtUtils;
+	JwtUtils jwtUtils; 
 
 	UserService userServ;
 	
