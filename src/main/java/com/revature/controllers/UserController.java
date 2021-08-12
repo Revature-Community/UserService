@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -48,7 +49,7 @@ public class UserController {
 
 	PasswordEncoder encoder;
 
-	JwtUtils jwtUtils;
+	JwtUtils jwtUtils; 
 
 	UserService userServ;
 	
@@ -133,7 +134,12 @@ public class UserController {
 //					.badRequest()
 //					.body(new MessageResponse("Error: Username is already taken!") // replace it with a jwt response
 //					);
-//		}
+//		} may need to refactor the code above ^^
+		//Look at the findbyUsername function in the userrepository class and implement that 
+		
+		// **Another way to check if a username already exists below.. may need to implement this in the future 
+		//Authentication authentication = authenticationManager.authenticate(
+		//new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));**
 //		
 //		userToAdd.setRole(RoleTitle.User);
 		
@@ -142,7 +148,11 @@ public class UserController {
 		user.setFirstName(newRequest.getFirstName());
 		user.setLastName(newRequest.getLastName());
 		user.setUsername(newRequest.getUsername());
-		user.setPassword(newRequest.getPassword());
+		//user.setPassword(newRequest.getPassword());
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+		String encodedPwd = passwordEncoder.encode(newRequest.getPassword());
+		user.setPassword(encodedPwd);
+
 		
 		
 		// always  User role for now 
@@ -155,6 +165,7 @@ public class UserController {
 		// save data
 		User userSaved = userServ.save(user);  // now save the user with data from the frontend and Role of 'User'
 		//For third table,  create user_roles repository /dao to save the incoming data :  6 (user id from userSaved) , 1 (role id of user) 
+		
 		
 		
 		// constructd JWT payload 

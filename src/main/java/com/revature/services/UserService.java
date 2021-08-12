@@ -8,13 +8,16 @@ import org.springframework.stereotype.Service;
 
 import com.revature.exceptions.ResourceNotFoundException;
 import com.revature.models.User;
+import com.revature.models.UserRole;
 import com.revature.repositories.UserRepository;
+import com.revature.repositories.UserRoleRepository;
 
 @Service
 public class UserService {
 
 	@Autowired
 	UserRepository userRepo;
+	UserRoleRepository userRoleRepo;
 
 	// use to get all the users from db
 	public List<User> findAll() {
@@ -27,6 +30,8 @@ public class UserService {
 	// use to add a new user to the db
 	public User save(User user) {
 		User u = userRepo.save(user);
+		UserRole ur = new UserRole(user.getId(), 1);
+		this.userRoleRepo.save(ur);
 		return u;
 
 	}
