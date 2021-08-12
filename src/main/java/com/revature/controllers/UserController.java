@@ -13,6 +13,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -142,7 +143,10 @@ public class UserController {
 		user.setFirstName(newRequest.getFirstName());
 		user.setLastName(newRequest.getLastName());
 		user.setUsername(newRequest.getUsername());
-		user.setPassword(newRequest.getPassword());
+		
+		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+		String encodedPwd = passwordEncoder.encode(newRequest.getPassword());
+		user.setPassword(encodedPwd);
 		
 		
 		// always  User role for now 
