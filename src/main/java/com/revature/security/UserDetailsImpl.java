@@ -40,10 +40,11 @@ public class UserDetailsImpl implements UserDetails {
 	}
 
 	public static UserDetailsImpl build(User user) {
-		List<GrantedAuthority> authorities = user.getRoles().stream()
+		List<GrantedAuthority> authorities = user.getRoles().stream()  // the author assume the user can many roles 
 				.map(role -> new SimpleGrantedAuthority(role.getTitle().name()))
 				.collect(Collectors.toList());
 		
+				
 		for(GrantedAuthority authority : authorities) {
 			System.out.println("role: "+authority.getAuthority());
 		}
