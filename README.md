@@ -62,6 +62,15 @@
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+* For incoming request to work, we need to generate the JWT token with email instead as well (in JwtUtils.java)
+
+		return Jwts.builder()
+				.setSubject((userPrincipal.getEmail()))
+				.setIssuedAt(new Date())
+				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.compact();
 		
 
 
