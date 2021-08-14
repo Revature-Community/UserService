@@ -130,7 +130,7 @@ public class UserController {
 	@PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
 	public ResponseEntity< User> createNewUser(@RequestBody  signRequest newRequest ) { // User userToAdd
 		System.out.println(newRequest.getRoles());
-		if (userRepository. existsByEmail(newRequest.getEmail())) {
+		if (userRepository.existsByEmail(newRequest.getEmail())) {
 			System.out.println("user exists \n");
 			return ResponseEntity
 					.badRequest()

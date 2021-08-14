@@ -54,11 +54,17 @@
 
 * Our application wants to accept email as the authenication in place of username 
 		
-		private UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
-	        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
-	    }
+		public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+			//User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+			User user = userRepository.findByEmail(username)
+					.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+			
+			return UserDetailsImpl.build(user);
 
-* The change uses email to build userdetails users, so we can pass email instead of username later in the login request handlers 
+		}
+
+* The change uses email to build userdetails users, so we can pass email instead of username later in the login request handlers (8/14/2021)
 
 		Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
@@ -76,10 +82,13 @@
 
 ### Continue implementations
 
-* implement the request payload class. The frontend client will need to send back the JWT token back to our service and our request handlers need to parse the body of requests into a request payload object first in order to use these data
+* implement the request payload class. The frontend client will need to send back the JWT token back to our service and our request handlers need to parse the body of requests into a request payload object first in order to use these data 
 
 
-* Reconfigure the WebSecurityConfig to block url requests
+* Things to do:
+	* Finish Sign in 
+	* Do logging with Log4j
+	* Do testing with junit 
+	* Do the integration with frontend
 
-Aug 11 2021
  
