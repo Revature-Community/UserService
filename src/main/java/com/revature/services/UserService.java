@@ -17,6 +17,8 @@ public class UserService {
 
 	@Autowired
 	UserRepository userRepo;
+	
+	@Autowired
 	UserRoleRepository userRoleRepo;
 
 	// use to get all the users from db
@@ -31,7 +33,7 @@ public class UserService {
 	public User save(User user) {
 		User u = userRepo.save(user);
 		UserRole ur = new UserRole(user.getId(), 1);
-		this.userRoleRepo.save(ur);
+		userRoleRepo.save(ur);
 		return u;
 
 	}

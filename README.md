@@ -50,12 +50,45 @@
     client <= payload( JWT , type: BEAR, user information ) <= our service
     client => payload( JWT token, type: BEAR, other requests ) => our service
 
+### Modification of buildUserForAuthentication method of UserDetailsServiceImpl.java 
+
+* Our application wants to accept email as the authenication in place of username 
+		
+		public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		
+			//User user = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+			User user = userRepository.findByEmail(username)
+					.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+			
+			return UserDetailsImpl.build(user);
+
+		}
+
+* The change uses email to build userdetails users, so we can pass email instead of username later in the login request handlers (8/14/2021)
+
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+
+* For incoming request to work, we need to generate the JWT token with email instead as well (in JwtUtils.java)
+
+		return Jwts.builder()
+				.setSubject((userPrincipal.getEmail()))
+				.setIssuedAt(new Date())
+				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+				.signWith(SignatureAlgorithm.HS512, jwtSecret)
+				.compact();
+		
+
 
 ### Continue implementations
 
-* implement the request payload class. The frontend client will need to send back the JWT token back to our service and our request handlers need to parse the body of requests into a request payload object first in order to use these data
+* implement the request payload class. The frontend client will need to send back the JWT token back to our service and our request handlers need to parse the body of requests into a request payload object first in order to use these data 
 
-* Reconfigure the WebSecurityConfig to block url requests
 
-Aug 11 2021
+* Things to do:
+	* Finish Sign in 
+	* Do logging with Log4j
+	* Do testing with junit 
+	* Do the integration with frontend
+
  

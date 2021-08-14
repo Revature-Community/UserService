@@ -92,7 +92,8 @@ public class UserController {
 		// - UsernamePasswordAuthenticationToken gets username/password from 
 		//login Request and combines into an instance of Authentication interface
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+				new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+		
 		
 		//SecurityContextHolder is the most fundamental object where  
 		//details of the present security context of the application is store 
@@ -129,12 +130,14 @@ public class UserController {
 	@PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
 	public ResponseEntity< User> createNewUser(@RequestBody  signRequest newRequest ) { // User userToAdd
 		System.out.println(newRequest.getRoles());
-//		if (userRepository.existsByUsername(userToAdd.getUsername())) {
-//			return ResponseEntity
-//					.badRequest()
-//					.body(new MessageResponse("Error: Username is already taken!") // replace it with a jwt response
-//					);
-//		} may need to refactor the code above ^^
+		if (userRepository.existsByEmail(newRequest.getEmail())) {
+			System.out.println("user exists \n");
+			return ResponseEntity
+					.badRequest()
+					.build(); // replace it with a jwt response
+					
+		}
+		//may need to refactor the code above 
 		//Look at the findbyUsername function in the userrepository class and implement that 
 		
 		// **Another way to check if a username already exists below.. may need to implement this in the future 
@@ -148,7 +151,8 @@ public class UserController {
 		user.setFirstName(newRequest.getFirstName());
 		user.setLastName(newRequest.getLastName());
 		user.setUsername(newRequest.getUsername());
-		//user.setPassword(newRequest.getPassword());
+
+		
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 		String encodedPwd = passwordEncoder.encode(newRequest.getPassword());
 		user.setPassword(encodedPwd);

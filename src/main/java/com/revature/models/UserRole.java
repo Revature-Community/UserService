@@ -14,8 +14,13 @@ import javax.persistence.Table;
 public class UserRole {
 
 	
-	@Column(name = "userId", nullable = false)
-	private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "id", nullable = false)
+	private int id;
+	
+	@Column(name = "user_id", nullable = false)
+	private Long user_id;
 	
 	
 	@Column(name="role_id")
@@ -28,45 +33,30 @@ public class UserRole {
 	}
 
 
-	public UserRole(Long id, Integer role_id) {
+	public UserRole(Long user_id, Integer role_id) {
 		super();
-		this.id = id;
+		this.user_id = user_id;
 		this.role_id = role_id;
 	}
 
 
-	@Override
-	public String toString() {
-		return "UserRole [id=" + id + ", role_id=" + role_id + "]";
-	}
-
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(id, role_id);
-	}
-
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UserRole other = (UserRole) obj;
-		return Objects.equals(id, other.id) && Objects.equals(role_id, other.role_id);
-	}
-
-
-	public Long getId() {
+	public int getId() {
 		return id;
 	}
 
 
-	public void setId(Long id) {
+	public void setId(int id) {
 		this.id = id;
+	}
+
+
+	public Long getUser_id() {
+		return user_id;
+	}
+
+
+	public void setUser_id(Long user_id) {
+		this.user_id = user_id;
 	}
 
 
@@ -78,6 +68,8 @@ public class UserRole {
 	public void setRole_id(Integer role_id) {
 		this.role_id = role_id;
 	}
+
+
 
 
 	
