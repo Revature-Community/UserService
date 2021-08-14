@@ -50,12 +50,27 @@
     client <= payload( JWT , type: BEAR, user information ) <= our service
     client => payload( JWT token, type: BEAR, other requests ) => our service
 
+### Modification of buildUserForAuthentication method of UserDetailsServiceImpl.java 
+
+* Our application wants to accept email as the authenication in place of username 
+		
+		private UserDetails buildUserForAuthentication(User user, List<GrantedAuthority> authorities) {
+	        return new org.springframework.security.core.userdetails.User(user.getEmail(), user.getPassword(), authorities);
+	    }
+
+* The change uses email to build userdetails users, so we can pass email instead of username later in the login request handlers 
+
+		Authentication authentication = authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+		
+
 
 ### Continue implementations
 
 * implement the request payload class. The frontend client will need to send back the JWT token back to our service and our request handlers need to parse the body of requests into a request payload object first in order to use these data
 
+
 * Reconfigure the WebSecurityConfig to block url requests
 
-
+Aug 11 2021
  

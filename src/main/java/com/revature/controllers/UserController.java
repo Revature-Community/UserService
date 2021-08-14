@@ -40,7 +40,7 @@ import com.revature.services.UserService;
 @CrossOrigin(origins="*", maxAge = 3600)
 @RequestMapping("/users")
 public class UserController {	
-	
+	//This is Authentication manager
 	AuthenticationManager authenticationManager;
 
 	UserRepository userRepository;
@@ -49,7 +49,7 @@ public class UserController {
 
 	PasswordEncoder encoder;
 
-	JwtUtils jwtUtils;
+	JwtUtils jwtUtils; 
 
 	UserService userServ;
 	
@@ -92,7 +92,8 @@ public class UserController {
 		// - UsernamePasswordAuthenticationToken gets username/password from 
 		//login Request and combines into an instance of Authentication interface
 		Authentication authentication = authenticationManager.authenticate(
-				new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+				new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
+		
 		
 		//SecurityContextHolder is the most fundamental object where  
 		//details of the present security context of the application is store 
@@ -129,12 +130,19 @@ public class UserController {
 	@PostMapping(path = "/add", consumes = "application/json", produces = "application/json")
 	public ResponseEntity< User> createNewUser(@RequestBody  signRequest newRequest ) { // User userToAdd
 		System.out.println(newRequest.getRoles());
-//		if (userRepository.existsByUsername(userToAdd.getUsername())) {
-//			return ResponseEntity
-//					.badRequest()
-//					.body(new MessageResponse("Error: Username is already taken!") // replace it with a jwt response
-//					);
-//		}
+		if (userRepository. existsByEmail(newRequest.getEmail())) {
+			System.out.println("user exists \n");
+			return ResponseEntity
+					.badRequest()
+					.build(); // replace it with a jwt response
+					
+		}
+		//may need to refactor the code above 
+		//Look at the findbyUsername function in the userrepository class and implement that 
+		
+		// **Another way to check if a username already exists below.. may need to implement this in the future 
+		//Authentication authentication = authenticationManager.authenticate(
+		//new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));**
 //		
 //		userToAdd.setRole(RoleTitle.User);
 		
@@ -143,10 +151,12 @@ public class UserController {
 		user.setFirstName(newRequest.getFirstName());
 		user.setLastName(newRequest.getLastName());
 		user.setUsername(newRequest.getUsername());
+
 		
 		PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
 		String encodedPwd = passwordEncoder.encode(newRequest.getPassword());
 		user.setPassword(encodedPwd);
+
 		
 		
 		// always  User role for now 
@@ -159,6 +169,7 @@ public class UserController {
 		// save data
 		User userSaved = userServ.save(user);  // now save the user with data from the frontend and Role of 'User'
 		//For third table,  create user_roles repository /dao to save the incoming data :  6 (user id from userSaved) , 1 (role id of user) 
+		
 		
 		
 		// constructd JWT payload 
