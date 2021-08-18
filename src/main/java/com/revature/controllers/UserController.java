@@ -37,7 +37,7 @@ import com.revature.security.UserDetailsImpl;
 import com.revature.services.UserService;
 
 @RestController
-@CrossOrigin(origins="*", maxAge = 3600)
+@CrossOrigin(origins="*")
 @RequestMapping("/users")
 public class UserController {	
 	//This is Authentication manager
