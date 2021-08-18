@@ -85,8 +85,7 @@
 * implement the request payload class. The frontend client will need to send back the JWT token back to our service and our request handlers need to parse the body of requests into a request payload object first in order to use these data 
 
 
-* Things to do:
-	* Finish Sign in 
+* Things to do next:
 	* Do logging with Log4j
 	* Do testing with junit 
 	* Do the integration with frontend
